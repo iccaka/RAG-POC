@@ -4,7 +4,7 @@ import chromadb
 from rag import ChromaDBEmbeddingFunction
 from langchain_ollama import OllamaEmbeddings, OllamaLLM
 
-llm_model = "qwen:1.8b"
+llm_model = 'qwen:1.8b'
 
 
 def add_docs_to_collection(documents, ids):
@@ -19,39 +19,41 @@ def query_chromadb(query_text, n_results=1):
         query_texts=[query_text],
         n_results=n_results
     )
-    return results["documents"], results["metadatas"]
+
+    return results['documents'], results['metadatas']
 
 
 def query_ollama(prompt, llm_model=llm_model):
     llm = OllamaLLM(model=llm_model)
+
     return llm.invoke(prompt)
 
 
 def rag_pipeline(query_text):
     retrieved_docs, metadata = query_chromadb(query_text)
-    context = " ".join(retrieved_docs[0]) if retrieved_docs else "No relevant documents found."
+    context = ' '.join(retrieved_docs[0]) if retrieved_docs else 'No relevant documents found.'
 
     augmented_prompt = f"Context: {context}\n\nQuestion: {query_text}\nAnswer:"
-    print("==========Augmented Prompt==========")
+    print('==========Augmented Prompt==========')
     print(augmented_prompt)
 
     return query_ollama(augmented_prompt, llm_model)
 
 
 if __name__ == '__main__':
-    chroma_client = chromadb.PersistentClient(path=os.path.join(os.getcwd(), "chroma_db"))
+    chroma_client = chromadb.PersistentClient(path=os.path.join(os.getcwd(), 'chroma_db'))
 
     embedding = ChromaDBEmbeddingFunction(
         OllamaEmbeddings(
             model=llm_model,
-            base_url="http://localhost:11434"
+            base_url='http://localhost:11434'
         )
     )
 
-    collection_name = "collection_1"
+    collection_name = 'collection_1'
     collection = chroma_client.get_or_create_collection(
         name=collection_name,
-        metadata={"description": "demo1"},
+        metadata={'description': 'demo1'},
         embedding_function=embedding
     )
 
@@ -82,6 +84,14 @@ if __name__ == '__main__':
     doc_ids = ['doc1', 'doc2', 'doc3', 'doc4', 'doc5', 'doc6', 'doc7', 'doc8']
     add_docs_to_collection(documents, doc_ids)
 
-    query = 'Is Taylor Swift going to perform?'
-    response = rag_pipeline(query)
-    print('==========Response from LLM==========\n', response)
+    while True:
+        try:
+            user_input = input('(Use \'exit\' to exit.)\nEnter query: ')
+
+            if user_input == 'exit':
+                break
+            else:
+                print('==========Response from LLM==========\n', rag_pipeline(user_input))
+        except ValueError:
+            print('Invalid input, please try again.')
+            continue
