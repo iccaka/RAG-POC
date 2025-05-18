@@ -1,1 +1,41 @@
 # ProvectusInternship_HristoMitsev
+
+## Getting started
+
+### Run locally
+
+1. Clone the **ProvectusInternship_HristoMitsev** repository in your desired directory:
+    ```bash
+   $> git clone https://github.com/iccaka/ProvectusInternship_HristoMitsev.git
+   ```
+2. Run these commands in order:
+    ```bash
+   # create a new virtual environment
+   $> python3 -m venv venv
+
+   # start the virtual environment
+   $> source /venv/bin/activate
+   
+   # install project dependencies
+   $> pip3 install -r requirements.txt
+   ```
+
+## Dependencies
+
+Please refer to [requirements.txt](requirements.txt) for a list of the python module dependencies.
+
+## Authors
+
+* **Hristo Mitsev** - *Initial work* - [iccaka](https://github.com/iccaka)
+
+See also the list of [contributors]() who participated 
+in this project.
+
+## Built With
+
+* [PyCharm](https://www.jetbrains.com/pycharm/) - *The IDE used*
+
+## License
+
+This project is licensed under the MIT License - *see the* 
+[LICENSE]() *file for details.*
