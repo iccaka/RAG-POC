@@ -32,13 +32,24 @@ def query_ollama(prompt, llm_model=llm_model):
 def rag_pipeline(query_text):
     retrieved_docs, metadata = query_chromadb(query_text)
     context = ' '.join(retrieved_docs[0]) if retrieved_docs else 'No relevant documents found.'
+    prompt = 'Context: {}\n\nQuestion: {}\nAnswer:'.format(context, query_text)
 
-    augmented_prompt = f"Context: {context}\n\nQuestion: {query_text}\nAnswer:"
-    print('==========Augmented Prompt==========')
-    print(augmented_prompt)
+    return query_ollama(prompt, llm_model)
 
-    return query_ollama(augmented_prompt, llm_model)
 
+def classify_user_intent(user_input):
+    prompt = ('The user has sent this message:\n\n\"{}\"\n\nDecide whether this message is trying to ADD A DOCUMENT to '
+              'the concert tour database or ASK A QUESTION.\n\nRespond with exactly one of the following labels:\n'
+              '- ADD_DOCUMENT\n- ASK_QUESTION'.format(user_input))
+
+    return query_ollama(prompt).strip()
+
+
+def is_concert_related(document_text):
+    prompt = ('Determine whether the following text is related to a concert tour:\n\n{}\n\nRespond with YES if it is '
+              'about concerts, tours, venues, or performers. Otherwise, respond with NO.'.format(document_text))
+
+    return 'yes' in query_ollama(prompt).lower()
 
 if __name__ == '__main__':
     chroma_client = chromadb.PersistentClient(path=os.path.join(os.getcwd(), 'chroma_db'))
@@ -57,7 +68,7 @@ if __name__ == '__main__':
         embedding_function=embedding
     )
 
-    documents = [
+    starting_documents = [
         'Lady Gaga has announced her Chromatica II Tour for 2025, starting in September. Key venues include Madison '
         'Square Garden (New York) on September 18, and the United Center (Chicago) on September 23. She will be joined '
         'by Rina Sawayama as a special guest for select North American dates.',
@@ -81,15 +92,32 @@ if __name__ == '__main__':
         '(Spain), and Open’er (Poland). Her team requested environmentally friendly transport options for gear, and '
         'sustainable merch partnerships are underway.'
     ]
-    doc_ids = ['doc1', 'doc2', 'doc3', 'doc4', 'doc5', 'doc6', 'doc7', 'doc8']
-    add_docs_to_collection(documents, doc_ids)
+    doc_ids = ['doc' + str(x + 1) for x, _ in enumerate(starting_documents)]
+    add_docs_to_collection(starting_documents, doc_ids)
 
     while True:
         try:
             user_input = input('(Use \'exit\' to exit.)\nEnter query: ')
 
-            if user_input == 'exit':
+            if user_input.lower() == 'exit':
                 break
+
+            intent = classify_user_intent(user_input)
+
+            if intent == 'ADD_DOCUMENT':
+                doc_text = user_input.split(':', 1)[-1].strip()
+
+                if is_concert_related(doc_text):
+                    doc_id = 'doc' + str(len(collection.get()['documents']) + 1)
+                    add_docs_to_collection(doc_text, doc_id)
+
+                    print('Document added with id {}.'.format(doc_id))
+                    prompt = 'Give a short and concise description of this document:\n{}'.format(doc_text)
+                    print(query_ollama(prompt))
+
+                else:
+                    print('Sorry, that document doesn\'t appear to be about concerts, gigs or tours ;(')
+                    continue
             else:
                 print('==========Response from LLM==========\n', rag_pipeline(user_input))
         except ValueError:
