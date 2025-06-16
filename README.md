@@ -1,12 +1,14 @@
-# ProvectusInternship_HristoMitsev
+# RAG-POC
+
+*A simge RAG proof of concept project*
 
 ## Getting started
 
 ### Run locally
 
-1. Clone the **ProvectusInternship_HristoMitsev** repository in your desired directory:
+1. Clone the **RAG-POC** repository in your desired directory:
     ```bash
-   $> git clone https://github.com/iccaka/ProvectusInternship_HristoMitsev.git
+   $> git clone https://github.com/iccaka/RAG-POC.git
    ```
 2. Run these commands in order:
     ```bash
