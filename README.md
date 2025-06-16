@@ -30,7 +30,7 @@ Please refer to [requirements.txt](requirements.txt) for a list of the python mo
 
 * **Hristo Mitsev** - *Initial work* - [iccaka](https://github.com/iccaka)
 
-See also the list of [contributors]() who participated 
+See also the list of [contributors](https://github.com/iccaka/RAG-POC/graphs/contributors) who participated 
 in this project.
 
 ## Built With
