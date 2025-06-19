@@ -1,6 +1,13 @@
 # RAG-POC
 
-*A simple RAG proof of concept project*
+This project implements a **Retrieval-Augmented Generation (RAG)** pipeline designed for managing and querying concert-related documents. Utilizing **ChromaDB** for document storage and the **Ollama language model** for natural language processing, this system allows users to efficiently add, classify, and query concert information.
+
+### Key Features:
+
+- **Document Management**: Users can add concert-related documents to a ChromaDB collection, enabling organized storage and retrieval.
+- **Intent Classification**: The system analyzes user input to determine whether the intent is to add a document or ask a question, streamlining user interactions.
+- **Concert Relevance Detection**: It checks if the provided text is related to concerts, tours, or performers, ensuring that only relevant information is stored.
+- **RAG Pipeline**: The system retrieves relevant documents based on user queries and generates context-aware responses using the Ollama language model.
 
 ## Getting started
 
