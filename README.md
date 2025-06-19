@@ -1,6 +1,6 @@
 # RAG-POC
 
-*A simge RAG proof of concept project*
+*A simple RAG proof of concept project*
 
 ## Getting started
 
@@ -21,6 +21,8 @@
    # install project dependencies
    $> pip3 install -r requirements.txt
    ```
+
+Tested on python version **3.10.12**
 
 ## Dependencies
 
